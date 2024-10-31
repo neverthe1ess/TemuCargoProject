@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 * 2차원 top-down(재귀) dp
 *  n이 100000쯤 되면 stackOverflow나 OutOfMemory(Heap 부족) 가능성 있음
  * IDE 설정에서 늘려주기
+ * -Xms4096m -Xmx26624m -Xss1024m
 * */
 
 public class Model1 {

@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
  * 퐁당퐁당
  * n이 100000쯤 되면 stackOverflow나 OutOfMemory(Heap 부족) 가능성 있음
  * IDE 설정에서 늘려주기
+ * -Xms4096m -Xmx26624m -Xss1024m
  * */
 
 
