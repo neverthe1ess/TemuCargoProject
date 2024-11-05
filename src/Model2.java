@@ -25,19 +25,21 @@ public class Model2 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int N = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
-        w = new int[N];
-        v = new int[N];
-        // 인덱스 맞추기 위한 1 더하기, 그리고 0번 시작아닌 1번 시작으로 1 더하기
-        maxValueTable = new Integer[N][(K / 2) + 2];
+        int N = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i < N; i++) {
+        w = new int[K];
+        v = new int[K];
+        int i;
+        // 인덱스 맞추기 위한 1 더하기, 그리고 0번 시작아닌 1번 시작으로 1 더하기
+        maxValueTable = new Integer[K][(N / 2) + 2];
+
+        for (i = 0; i < K; i++) {
             st = new StringTokenizer(br.readLine());
             w[i] = Integer.parseInt(st.nextToken());
             v[i] = Integer.parseInt(st.nextToken());
         }
-        System.out.println(calcMaxCargoValue(N - 1, K));
+        System.out.println(calcMaxCargoValue(K - 1, N));
 
         // 메모리 측정 종료
         long memoryAfter = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -46,24 +48,24 @@ public class Model2 {
         System.out.println("메모리 사용량: " + (memoryAfter - memoryBefore) + " bytes");
     }
 
-    static int calcMaxCargoValue(int i, int k) {
+    static int calcMaxCargoValue(int i, int N) {
         if (i < 0) return 0;
 
-        if((i % 2 == 0 && k % 2 == 0) || (i % 2 == 1 && k % 2 == 1)){
+        if((i % 2 == 0 && N % 2 == 0) || (i % 2 == 1 && N % 2 == 1)){
             // i가 짝수면 짝수인 열만 데이터 유지하기
-                if(maxValueTable[i][(k + 1) / 2] == null){   // 0, 2, 4, 6 -> 0, 1, 2, 3
-                    if(w[i] > k){
-                        maxValueTable[i][(k + 1) / 2] = calcMaxCargoValue(i  -1, k);
+                if(maxValueTable[i][(N + 1) / 2] == null){   // 0, 2, 4, 6 -> 0, 1, 2, 3
+                    if(w[i] > N){
+                        maxValueTable[i][(N + 1) / 2] = calcMaxCargoValue(i  - 1, N);
                     } else {
-                        maxValueTable[i][(k + 1) / 2] = Math.max(calcMaxCargoValue(i - 1, k), calcMaxCargoValue(i - 1, k - w[i]) + v[i]);
+                        maxValueTable[i][(N + 1) / 2] = Math.max(calcMaxCargoValue(i - 1, N), calcMaxCargoValue(i - 1, N - w[i]) + v[i]);
                     }
                 }
-                return maxValueTable[i][(k + 1) / 2]; // 값이 있으면 주기
+                return maxValueTable[i][(N + 1) / 2]; // 값이 있으면 주기
             } else {
-                if(w[i] > k){
-                    return calcMaxCargoValue(i  -1, k);
+                if(w[i] > N){
+                    return calcMaxCargoValue(i  -1, N);
                 } else {
-                    return Math.max(calcMaxCargoValue(i - 1, k), calcMaxCargoValue(i - 1, k - w[i]) + v[i]);
+                    return Math.max(calcMaxCargoValue(i - 1, N), calcMaxCargoValue(i - 1, N - w[i]) + v[i]);
                 }
             }
     }
