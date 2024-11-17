@@ -1,17 +1,14 @@
+package dummymodel;
+
 import java.io.*;
 import java.util.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-/*
-* -Xms4096m -Xmx26624m -Xss1024m
-* */
-
-
-public class Model1 {
+public class Model1_4 {
     // 입력 JSON 파일 경로
-    public static final String SRC_INPUT_JSON = "src/input_2500.json";
+    public static final String SRC_INPUT_JSON = "src/input_1500.json";
     // 아이템의 무게와 가치를 저장할 배열
     public static int[][] items;
     // 아이템의 개수
@@ -32,7 +29,6 @@ public class Model1 {
     static ArrayList<int[]> selecteditems = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
-
         System.gc();
         // 메모리 측정 시작
         long memoryBefore = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -56,37 +52,33 @@ public class Model1 {
             System.exit(-1);
         }
         // DP 테이블 및 배열 초기화
-        maxValueTable = new int[K+1][N+1];
-        Load_items_0 = new int[N+1];
-        Load_items = new int[N+1][K];
+        maxValueTable = new int[N+ 1][K];
+        Load_items_0 = new int[N];
+        Load_items = new int[N][K];
         // 최대 적재 가치 계산
         calcMaxCargoValue();
         // 최대 가치 출력
-        System.out.println("최대 가치: " + maxValueTable[K][N]);
+        System.out.println("최대 가치: " + maxValueTable[N][K-1]);
         selecteditems = findSelectedItems();
         // 최적 조합 저장
         outputFileWriter(selecteditems);
-
-        // 메모리 측정 코드
-        long memoryAfter = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        System.out.println("메모리 사용량: " + (memoryAfter - memoryBefore) + " bytes");
-
     }
-    // 최대 적재 가치를 계산하는 메소드
+
     static void calcMaxCargoValue() throws Exception {
         for (int i = 0; i < K; i++) {
-            W_i = items[i][0];
-            V_i = items[i][1];
+            W_i = items[i + 1][0];
+            V_i = items[i + 1][1];
             // 적재된 아이템을 표시하는 배열 초기화
             Arrays.fill(Load_items_0, 0);
-            //for문 진입전 복사 수행
-            System.arraycopy(maxValueTable[i], 0, maxValueTable[i+1], 0, N+1);
             for (int j = W_i; j <= N; j++) {
                 // 최대 가치 값보다 현재 가치가 낮다면
                 if (maxValueTable[i][j] < maxValueTable[i][j - W_i] + V_i) {
                     // 최대 가치 테이블 갱신
                     maxValueTable[i + 1][j] = maxValueTable[i][j - W_i] + V_i;
                     Load_items_0[j] = 1;
+                } else {
+                    // 최대 가치 테이블에 기존 가치 테이블 값 대입
+                    maxValueTable[i + 1][j] = maxValueTable[i][j];
                 }
             }
             for (int k = N; k >= W_i; k--) {
@@ -99,7 +91,7 @@ public class Model1 {
             }
         }
     }
-    // JSON 파일에서 물품의 무게와 가치를 읽어오는 메소드
+    // 파일 읽기
     static int[][] inputFileReader() throws Exception {
         // Json 객체를 파싱하기 위한 선언
         JSONParser parser = new JSONParser();

@@ -1,18 +1,18 @@
+package dummymodel;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Random;
 import java.util.StringTokenizer;
 /*
- * 베이스 코드
- * 2차원 top-down(재귀) dp
- *  n이 100000쯤 되면 stackOverflow나 OutOfMemory(Heap 부족) 가능성 있음
+* 베이스 코드
+* 2차원 top-down(재귀) dp
+*  n이 100000쯤 되면 stackOverflow나 OutOfMemory(Heap 부족) 가능성 있음
  * IDE 설정에서 늘려주기
  * -Xms4096m -Xmx26624m -Xss1024m
- * 테스트 케이스 별도 입력이 아닌 자동 생성
- * */
+* */
 
-public class Model1_2 {
+public class Model1 {
     static Integer[][] dp;
     static int[] w;
     static int[] v;
@@ -30,15 +30,10 @@ public class Model1_2 {
         v = new int[N];
         dp = new Integer[N][K + 1];
 
-        int min=100;
-        int w_max = 45000;
-        int v_max = 30;
-
         for (int i = 0; i < N; i++) {
-            long seed=System.nanoTime();
-            Random random=new Random(seed);
-            w[i] = random.nextInt(w_max+1)+min;
-            v[i] = random.nextInt(v_max+1)+min;
+            st = new StringTokenizer(br.readLine());
+            w[i] = Integer.parseInt(st.nextToken());
+            v[i] = Integer.parseInt(st.nextToken());
         }
         System.out.println(knapsack(N- 1, K));
         // 메모리 측정 종료
