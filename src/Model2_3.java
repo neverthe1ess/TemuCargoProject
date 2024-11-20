@@ -40,9 +40,15 @@ public class Model2_3 {
         // 아이템의 개수에 따라 무게와 가치 대입
         w = new int[K];
         v = new int[K];
+
+        // 아이템의 무게 합을 받아옴
+        int weightSum = inputFileReader();
+        // 만약 무게 합이 N보다 작다면 N으로 선정(즉, 배열의 크기를 줄임)
+        if(weightSum < N){
+            N = weightSum;
+        }
         maxValueTable = new int[K][(N / 2) + 2];
         selected = new boolean[K][(N / 2) + 2];
-        inputFileReader(); // JSON 파일 읽기
 
         // 최대 가치 계산
         System.out.println("최대 가치: " + calcMaxCargoValue(K - 1, N));
@@ -101,14 +107,15 @@ public class Model2_3 {
     }
 
     // JSON 파일에서 물품의 무게와 가치를 읽어오는 메소드
-    static void inputFileReader() throws Exception{
+    static int inputFileReader() throws Exception{
         JSONParser parser = new JSONParser();
         // JSON 파일 읽기
         FileReader reader = new FileReader(SRC_INPUT_JSON);
+        int weightSum = 0;
         // JSON 객체들의 모임인 JsonArray로 파싱
         JSONArray JsonArray = (JSONArray) parser.parse(reader);
-        for (Object obj : JsonArray) {
-            JSONObject productJsonObject = (JSONObject) obj;
+        for (Object element : JsonArray) {
+            JSONObject productJsonObject = (JSONObject) element;
             // JSON에서 데이터 추출 및 배열에 저장
             Long idxLong =(Long) productJsonObject.get("idx");
             Long weightLong = (Long) productJsonObject.get("weight");
@@ -120,7 +127,10 @@ public class Model2_3 {
 
             w[idx] = weight;
             v[idx] = value;
+            //N보다 작은지 확인하기 위해서 무게 합을 더함
+            weightSum += weight;
         }
+        return weightSum;
     }
     // 선택된 물품 정보를 JSON 파일로 출력하는 메소드
     static void outputFileWriter(List<Integer> cargoManifest) throws Exception{
@@ -173,7 +183,7 @@ public class Model2_3 {
                 }
             } else {
                 // 중복 계산 될때
-                // 무게가 가치보다 크고 최대 최대 적재 가치가 전 가치 보다 같지 않을 경우
+                // 무게가 가치보다 크고 최대 적재 가치가 전 가치 보다 같지 않을 경우
                 if (N >= w[i] && calcMaxCargoValue(i, N) != calcMaxCargoValue(i - 1, N)) {
                     result.add(i);
                     N -= w[i];
